@@ -3,6 +3,10 @@
 ;;; Common Lisp extensions for Emacs
 (require 'cl)
 
+
+;;; set default mode to scrach buffer
+(setq default-major-mode 'lisp-interaction-mode)
+
 ;;; debug on
 ;; (setq debug-on-error t)
 
@@ -248,6 +252,8 @@
 					  tuareg
 					  ocp-indent
 					  ;;; flymake-tuareg
+            ;;; --- markdown mode ---
+            markdown-mode
 					  ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -260,17 +266,17 @@
 ;;; --- anzu (refactoring mode) ---
 (global-anzu-mode +1)
 (custom-set-variables
- ;;; custom-set-variables was added by Custom.
- ;;; If you edit it by hand, you could mess it up, so be careful.
- ;;; Your init file should contain only one such instance.
- ;;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(anzu-deactivate-region t)
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -289,6 +295,7 @@
 ;;; --- go mode
 (require 'go-autocomplete)
 (add-hook 'go-mode-hook 'flycheck-mode)
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 ;;; tuareg-mode
 (setq auto-mode-alist
@@ -410,6 +417,11 @@
 			(setq indent-tabs-mode nil)
 			(define-key haml-mode-map "\C-m" 'newline-and-indent)))
 
+;;; markdown mode
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     OPAM configuration       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -465,10 +477,10 @@
 (set-default-coding-systems 'utf-8)
 
 (custom-set-faces
- ;;; custom-set-faces was added by Custom.
- ;;; If you edit it by hand, you could mess it up, so be careful.
- ;;; Your init file should contain only one such instance.
- ;;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(company-preview ((t (:foreground "darkgray" :underline t))))
  '(company-preview-common ((t (:inherit company-preview))))
  '(company-tooltip ((t (:background "lightgray" :foreground "black"))))
@@ -479,3 +491,13 @@
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
+
+;; --- satysfi mode
+(require 'satysfi)
+(add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
+(add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
+(add-hook 'satysfi-mode '(lambda () (setq tab-widh 2 indent-tab-mode nil)))
+(setq satysfi-command "satysfi")
+  ; set the command for typesetting (default: "satysfi -b")
+(setq satysfi-pdf-viewer-command "sumatrapdf")
+  ; set the command for opening PDF files (default: "open")
