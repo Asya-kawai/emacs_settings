@@ -194,67 +194,67 @@
 (package-initialize)
 ;;; --- emacs package install ---
 (defvar my-packages '(
-					  ;;; --- refactoring ---
-					  anzu
-					  ;;; --- auto-complete ---
-					  auto-complete
-            ;;; --- load path from shell ---
-            exec-path-from-shell
-					  ;;; --- ruby mode ---
-					  ruby-mode
-					  ruby-electric
-					  ruby-block
-					  ruby-refactor
-					  ;;; --- python mode ---
-					  python-mode
-					  elpy
-						jedi
-						py-autopep8
-						flymake-easy
-						flymake-python-pyflakes
-						pyvenv
-					  ;;; --- org mode ---
-					  org
-						;;; --- vue mode ---
-						vue-mode
-						mmm-mode
-						vue-html-mode
-						ssass-mode
-						edit-indirect
-            ;;; --- go mode ---
-            company
-            company-go
-            go-autocomplete
-						;;; --- scss mode ---
-						scss-mode
-					  ;;; --- web mode ---
-					  web-mode
-					  ;;; --- haml mode ---
-					  haml-mode
-					  ;;; --- coffee sript ---
-					  coffee-mode
-					  coffee-fof
-					  ;;; --- php mode ---
-					  php-mode
-					  php-completion
-					  cake
-					  cake2
-					  helm
-					  helm-gtags
-					  ;;; --- clojure mode ---
-					  clojure-mode
-					  paredit
-					  cider
-					  rainbow-delimiters
-					  ac-nrepl
-					  ;;; --- ocaml util ---
-					  caml
-					  tuareg
-					  ocp-indent
-					  ;;; flymake-tuareg
-            ;;; --- markdown mode ---
-            markdown-mode
-					  ))
+                      ;;; --- refactoring ---
+                      anzu
+                      ;;; --- auto-complete ---
+                      auto-complete
+                      ;;; --- load path from shell ---
+                      exec-path-from-shell
+                      ;;; --- ruby mode ---
+                      ruby-mode
+                      ruby-electric
+                      ruby-block
+                      ruby-refactor
+                      ;;; --- python mode ---
+                      python-mode
+                      elpy
+                      jedi
+                      py-autopep8
+                      flymake-easy
+                      flymake-python-pyflakes
+                      pyvenv
+                      ;;; --- vue mode ---
+                      vue-mode
+                      mmm-mode
+                      vue-html-mode
+                      ssass-mode
+                      edit-indirect
+                      ;;; --- go mode ---
+                      company
+                      company-go
+                      go-autocomplete
+                      ;;; --- scss mode ---
+                      scss-mode
+                      ;;; --- web mode ---
+                      web-mode
+                      ;;; --- haml mode ---
+                      haml-mode
+                      ;;; --- coffee sript ---
+                      coffee-mode
+                      coffee-fof
+                      ;;; --- php mode ---
+                      php-mode
+                      php-completion
+                      cake
+                      cake2
+                      helm
+                      helm-gtags
+                      ;;; --- clojure mode ---
+                      clojure-mode
+                      paredit
+                      cider
+                      rainbow-delimiters
+                      ac-nrepl
+                      ;;; --- ocaml util ---
+                      caml
+                      tuareg
+                      ocp-indent
+                      ;;; flymake-tuareg
+                      ;;; --- markdown mode ---
+                      markdown-mode
+                      ;;; --- org mode ---
+                      org
+                      ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-refresh-contents)
