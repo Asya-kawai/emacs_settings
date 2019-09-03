@@ -276,7 +276,7 @@
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (markdown-preview-mode company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -297,32 +297,31 @@
 (add-hook 'go-mode-hook 'flycheck-mode)
 (add-hook 'before-save-hook 'gofmt-before-save)
 
-;; (use-package lsp-mode
-;;   :custom ((lsp-inhibit-message t)
-;;          (lsp-message-project-root-warning t)
-;;          (create-lockfiles nil))
-;;   :hook   (prog-major-mode . lsp-prog-major-mode-enable))
+(use-package lsp-mode
+  :custom ((lsp-inhibit-message t)
+         (lsp-message-project-root-warning t)
+         (create-lockfiles nil))
+  :hook   (prog-major-mode . lsp-prog-major-mode-enable))
 
-;; (use-package lsp-ui
-;;   :after lsp-mode
-;;   :custom (scroll-margin 0)
-;;   :hook   (lsp-mode . lsp-ui-mode))
+(use-package lsp-ui
+  :after lsp-mode
+  :custom (scroll-margin 0)
+  :hook   (lsp-mode . lsp-ui-mode))
 
-;; (use-package company-lsp
-;;   :after (lsp-mode company yasnippet)
-;;   :defines company-backends
-;;   :functions company-backend-with-yas
-;;   :init (cl-pushnew (company-backend-with-yas 'company-lsp) company-backends))
+(use-package company-lsp
+  :after (lsp-mode company yasnippet)
+  :defines company-backends
+  :functions company-backend-with-yas
+  :init (cl-pushnew (company-backend-with-yas 'company-lsp) company-backends))
 
-;; (use-package lsp-go
-;;   :after (lsp-mode go-mode)
-;;   :custom (lsp-go-language-server-flags '(
-;;     "-gocodecompletion"
-;;     "-diagnostics"
-;;     "-lint-tool=golint"))
-;;   :hook (go-mode . lsp-go-enable)
-;;   :commands lsp-go-enable)
-
+(use-package lsp-go
+  :after (lsp-mode go-mode)
+  :custom (lsp-go-language-server-flags '(
+    "-gocodecompletion"
+    "-diagnostics"
+    "-lint-tool=golint"))
+  :hook (go-mode . lsp-go-enable)
+  :commands lsp-go-enable)
 
 ;;; tuareg-mode
 (setq auto-mode-alist
@@ -499,6 +498,11 @@
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
+;;; markdown preview mode
+(setq markdown-preview-stylesheets
+      (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     OPAM configuration       ;;
