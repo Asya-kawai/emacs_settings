@@ -276,7 +276,7 @@
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (markdown-preview-mode company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (markdown-preview-mode markdown-preview-eww company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -503,6 +503,17 @@
 (setq markdown-preview-stylesheets
       (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
 
+(setq markdown-preview-javascript
+      (list "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js"))
+;;
+;; doesn't work.
+;;
+;; (add-to-list 'markdown-preview-stylesheets
+;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.css")
+;; (add-to-list 'markdown-preview-javascript
+;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js")
+;; (add-to-list 'markdown-preview-javascript
+;;              ("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/contrib/auto-render.js")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     OPAM configuration       ;;
