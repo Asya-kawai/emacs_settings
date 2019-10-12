@@ -261,7 +261,8 @@
     (package-install p)))
 
 ;;; --- exec path from shell ---
-;;(exec-path-from-shell-initialize)
+;; load environment variables defined in shell.
+(exec-path-from-shell-initialize)
 
 ;;; --- anzu (refactoring mode) ---
 (global-anzu-mode +1)
