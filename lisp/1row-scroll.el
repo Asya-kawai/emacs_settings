@@ -1,9 +1,9 @@
-;;; 1row-scroll.el ---
-;;;-*- coding:utf-8 -*- 
+;-*- coding:utf-8 -*- 
+;;; 1row-scroll.el ---                               -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015  toshiki KAWAI
+;; Copyright (C) 2015  toshiki kawai
 
-;; Author: toshiki KAWAI <tsk@obsd.is.koeki-u.ac.jp>
+;; Author: toshiki kawai <toshiki@aoi-local>
 ;; Keywords: 
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -24,15 +24,11 @@
 ;; 
 
 ;;; Code:
-
 (global-set-key "\C-z"
                 '(lambda (arg) (interactive "p") (scroll-up arg)))
 
 (global-set-key "\C-o"
                 '(lambda (arg)  (interactive "p") (scroll-down arg)))
-
-;;;(global-set-key "\C-u"
-;;;'suspend-emacs)
 
 (provide '1row-scroll)
 ;;; 1row-scroll.el ends here
