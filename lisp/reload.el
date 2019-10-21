@@ -34,7 +34,7 @@
 
 (defun load-init-file (list)
   "load init file for Emacs."
-  (interactive)
+  ;;(interactive)
   (when list ;; recursive.
     (let ((f (car list))) ;; get a first element.
       ;; if (f is not nil) and (f is file)
