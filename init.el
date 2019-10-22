@@ -22,8 +22,8 @@
 (require 'coding-utf8)
 ;;; call 1row-scroll
 (require '1row-scroll)
-;;; call reload
-(require 'reload)
+;;; call reloader
+(require 'reloader)
 
 ;;; Set language
 (set-language-environment "Japanese")
