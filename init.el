@@ -222,9 +222,10 @@
                       ssass-mode
                       edit-indirect
                       ;;; --- go mode ---
-                      company
-                      company-go
+                      go-mode
                       go-autocomplete
+                      go-eldoc
+                      go-dlv
                       ;;; --- scss mode ---
                       scss-mode
                       ;;; --- web mode ---
@@ -237,8 +238,6 @@
                       ;;; --- php mode ---
                       php-mode
                       php-completion
-                      cake
-                      cake2
                       helm
                       helm-gtags
                       ;;; --- clojure mode ---
@@ -256,6 +255,8 @@
                       markdown-mode
                       ;;; --- org mode ---
                       org
+                      ;;; --- lsp(language server protocol) mode ---
+                      lsp-mode
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -279,7 +280,7 @@
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (yaml-mode markdown-preview-mode markdown-preview-eww company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (go-dlv yaml-mode markdown-preview-mode markdown-preview-eww company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
