@@ -299,6 +299,8 @@
 (with-eval-after-load 'go-mode
    ;; auto-complete
    (require 'go-autocomplete)
+   ;; golang debugger
+   (require 'go-dlv)
    ;; flycheck and save-hook
    (add-hook 'go-mode-hook 'flycheck-mode)
    (add-hook 'before-save-hook 'gofmt-before-save)
