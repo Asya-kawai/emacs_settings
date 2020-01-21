@@ -296,9 +296,15 @@
 (global-auto-complete-mode t)
 
 ;;; --- go mode
-(require 'go-autocomplete)
-(add-hook 'go-mode-hook 'flycheck-mode)
-(add-hook 'before-save-hook 'gofmt-before-save)
+;; reference: https://emacs-jp.github.io/programming/golang
+(with-eval-after-load 'go-mode
+   ;; auto-complete
+   (require 'go-autocomplete)
+   ;; flycheck and save-hook
+   (add-hook 'go-mode-hook 'flycheck-mode)
+   (add-hook 'before-save-hook 'gofmt-before-save)
+   ;; eldoc
+   (add-hook 'go-mode-hook 'go-eldoc-setup))
 
 (use-package lsp-mode
   :custom ((lsp-inhibit-message t)
