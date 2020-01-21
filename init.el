@@ -230,16 +230,12 @@
                       scss-mode
                       ;;; --- web mode ---
                       web-mode
-                      ;;; --- haml mode ---
-                      haml-mode
                       ;;; --- coffee sript ---
                       coffee-mode
                       coffee-fof
                       ;;; --- php mode ---
                       php-mode
                       php-completion
-                      helm
-                      helm-gtags
                       ;;; --- clojure mode ---
                       clojure-mode
                       paredit
@@ -257,6 +253,8 @@
                       org
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
+                      ;;; --- yaml-mode ---
+                      yaml-mode
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -280,7 +278,7 @@
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (go-dlv yaml-mode markdown-preview-mode markdown-preview-eww company tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete company-go go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython helm-gtags haml-mode flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -495,14 +493,6 @@
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
-
-;;; --- HAML mode
-(require 'haml-mode)
-(add-to-list 'auto-mode-alist '("\\.haml?\\'" . haml-mode))
-(add-hook 'haml-mode-hook
-		  (lambda ()
-			(setq indent-tabs-mode nil)
-			(define-key haml-mode-map "\C-m" 'newline-and-indent)))
 
 ;;; markdown mode
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
