@@ -39,9 +39,9 @@
         (insert-utf8)
       (insert "-*- coding:utf-8 -*- "))))
 
-;; keybinding: C-c u
+;; keybinding: C-c C-l u
 ;; Insert an comment of 'coding:utf-8'.
-(define-key global-map "\C-cu" 'insert-string-utf8)
+(define-key global-map "\C-c\C-lu" 'insert-string-utf8)
 
 (provide 'coding-utf8)
 ;;; coding-utf8.el ends here

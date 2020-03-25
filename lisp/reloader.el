@@ -48,6 +48,6 @@ C-u M-x reloader-reload causes prompt for loading file.")
       (setq files (cdr files)))))
  
  
-(define-key global-map "\C-cr" 'reloader-reload)
+(define-key global-map "\C-c\C-lr" 'reloader-reload)
 (provide 'reloader)
 ;;; reloader.el ends here
