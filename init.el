@@ -223,8 +223,6 @@
                       edit-indirect
                       ;;; --- go mode ---
                       go-mode
-                      go-autocomplete
-                      go-eldoc
                       go-dlv
                       ;;; --- scss mode ---
                       scss-mode
@@ -253,6 +251,8 @@
                       org
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
+                      lsp-ui
+                      company-lsp
                       ;;; --- yaml-mode ---
                       yaml-mode
                       ))
@@ -278,7 +278,7 @@
  '(anzu-search-threshold 1000)
  '(package-selected-packages
    (quote
-    (go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui lsp-go use-package lsp-mode go-eldoc markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package lsp-mode markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -295,43 +295,64 @@
 (global-auto-complete-mode t)
 
 ;;; --- go mode
-;; reference: https://emacs-jp.github.io/programming/golang
-(with-eval-after-load 'go-mode
-   ;; auto-complete
-   (require 'go-autocomplete)
-   ;; golang debugger
-   (require 'go-dlv)
-   ;; flycheck and save-hook
-   (add-hook 'go-mode-hook 'flycheck-mode)
-   (add-hook 'before-save-hook 'gofmt-before-save)
-   ;; eldoc
-   (add-hook 'go-mode-hook 'go-eldoc-setup))
 
+;; reference: https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+;; reference: https://blog.web-apps.tech/lsp-mode-with-gopls/
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; Language Server
+;; Note: go get golang.org/x/tools/gopls@latest
 (use-package lsp-mode
-  :custom ((lsp-inhibit-message t)
-         (lsp-message-project-root-warning t)
-         (create-lockfiles nil))
-  :hook   (prog-major-mode . lsp-prog-major-mode-enable))
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :hook (go-mode . lsp-deferred))
 
+;; Optional - provides fancier overlays.
 (use-package lsp-ui
-  :after lsp-mode
-  :custom (scroll-margin 0)
-  :hook   (lsp-mode . lsp-ui-mode))
+  :ensure t
+  :commands lsp-ui-mode)
 
+;; Company mode is a standard completion package that works well with lsp-mode.
+(use-package company
+  :ensure t
+  :config
+  ;; Optionally enable completion-as-you-type behavior.
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1))
+(add-hook 'go-mode-hook 'company-mode)
+
+;; setting for company mode
+;; reference: https://qiita.com/kod314/items/3a31719db27a166d2ec1
+(with-eval-after-load 'company
+      (setq company-auto-expand t)
+      (setq company-transformers '(company-sort-by-backend-importance))
+      (setq company-idle-delay 0)
+      (setq company-minimum-prefix-length 2)
+      (setq company-selection-wrap-around t)
+      (setq completion-ignore-case t)
+      (setq company-dabbrev-downcase nil)
+      (global-set-key (kbd "C-M-i") 'company-complete)
+      (define-key company-active-map (kbd "C-n") 'company-select-next)
+      (define-key company-active-map (kbd "C-p") 'company-select-previous)
+      ;; use tab for completion
+      (define-key company-active-map [tab] 'company-complete-selection)
+      ;; C-h is disable for ackspace
+      (define-key company-active-map (kbd "C-h") nil)
+      ;; C-Shift-h shows document
+      (define-key company-active-map (kbd "C-S-h") 'company-show-doc-buffer)
+      )
+
+;; company-lsp integrates company mode completion with lsp-mode.
+;; completion-at-point also works out of the box but doesn't support snippets.
 (use-package company-lsp
-  :after (lsp-mode company yasnippet)
-  :defines company-backends
-  :functions company-backend-with-yas
-  :init (cl-pushnew (company-backend-with-yas 'company-lsp) company-backends))
-
-(use-package lsp-go
-  :after (lsp-mode go-mode)
-  :custom (lsp-go-language-server-flags '(
-    "-gocodecompletion"
-    "-diagnostics"
-    "-lint-tool=golint"))
-  :hook (go-mode . lsp-go-enable)
-  :commands lsp-go-enable)
+  :ensure t
+  :commands company-lsp)
 
 ;;; tuareg-mode
 (setq auto-mode-alist
@@ -596,3 +617,5 @@
   ; set the command for typesetting (default: "satysfi -b")
 (setq satysfi-pdf-viewer-command "sumatrapdf")
   ; set the command for opening PDF files (default: "open")
+
+;;(require 'restclient-vscode-compatible)
