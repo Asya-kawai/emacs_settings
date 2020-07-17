@@ -198,14 +198,15 @@
 (defvar my-packages '(
                       ;;; --- useful tools ---
                       which-key
+                      smex
                       ido-completing-read+
-                      diminish
-                      volatile-highlights
-                      highlight-indent-guides
-                      symbol-overlay
+                      ido-vertical-mode
                       ido-select-window
                       ido-migemo
-                      smex
+                      diminish
+                      symbol-overlay
+                      volatile-highlights
+                      highlight-indent-guides
                       ;;; --- refactoring ---
                       anzu
                       ;;; --- auto-complete ---
