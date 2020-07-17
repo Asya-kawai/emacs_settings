@@ -261,12 +261,84 @@
     (package-refresh-contents)
     (package-install p)))
 
+;;; --- which-key
+;; reference: https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf
+(use-package which-key
+  :diminish which-key-mode
+  :hook (after-init . which-key-mode))
+
+;;; --- ido-mode (Emacs default)
+;; reference: https://qiita.com/tadsan/items/33ebb8db2271897a462b
+(ido-mode 1)
+(ido-everywhere 1)
+(setq ido-enable-flex-matching t) 
+(setq ido-enable-dot-prefix t)
+
+;; Use smex(ido; Emacs default completion mode), Not use amx.
+(use-package smex
+  :ensure t
+  :bind (("M-x" . smex)
+         ("M-X" . smex-major-mode-commands)
+         ("C-c C-c M-x" . execute-extended-command))
+  :config
+  (smex-initialize))
+
+;; reference: https://www-he.scphys.kyoto-u.ac.jp/member/shotakaha/dokuwiki/doku.php?id=toolbox:emacs:ido:start
+;;
+;; If it helps, I get the warning Warning (bytecomp): 
+;;   reference to free variable ‘ido-cr+-minibuffer-depth’ when starting up Emacs, 
+;;   but this only started when just now switching from ido-ubiquitous to ido-completing-read+.
+;;   I made the package change upon noticing the message about the name change to switch to ido-completing-read+.
+;;   Before that, never had such messages.
+;;
+;; reference: https://github.com/DarwinAwardWinner/ido-completing-read-plus/issues/121
+;(require 'ido-ubiquitous)
+(require 'ido-completing-read+)
+(ido-ubiquitous-mode 1)
+
+(use-package ido-vertical-mode
+  :config
+  (ido-vertical-mode 1)
+  ;; C-n and C-p selects candidated words
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+  (setq ido-vertical-show-count t))
+;;
+;; --- Cloudn't search hidden files, too bad!
+;; (use-package ido-migemo
+;;   :ensure t
+;;   :config
+;;   (setq ido-migemo-exclude-command-list '(smex swith-to-buffer ido-switch-buffer persp-switch ido-describe-bindings))
+;;   (setq ido-migemo-prompt-string "=[ido-migemo]=")
+;;   (ido-mode 1)
+;;   (ido-migemo-mode 1))
+;;
+;; ---I think it's not useful for me because I use windows.el
+;;(use-package ido-select-window
+;;  :ensure t
+;;  :bind ("C-x o" . ido-select-window))
+
+;; reference: https://www.yokoweb.net/2017/03/05/emacs-ubuntu-migemo/
+(when (and (executable-find "cmigemo")
+           (require 'migemo nil t))
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+
+  (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
+
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (load-library "migemo")
+  (migemo-init)
+)
+
 ;;; --- exec path from shell ---
 ;; load environment variables defined in shell.
 (exec-path-from-shell-initialize)
 
 ;;; --- anzu (refactoring mode) ---
 (global-anzu-mode +1)
+(setq anzu-use-migemo t)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -276,9 +348,17 @@
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
+ '(avy-migemo-function-names
+   (quote
+    (swiper--add-overlays-migemo
+     (swiper--re-builder :around swiper--re-builder-migemo-around)
+     (ivy--regex :around ivy--regex-migemo-around)
+     (ivy--regex-ignore-order :around ivy--regex-ignore-order-migemo-around)
+     (ivy--regex-plus :around ivy--regex-plus-migemo-around)
+     ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
  '(package-selected-packages
    (quote
-    (go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package lsp-mode markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-ubiquitous ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package lsp-mode markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -293,6 +373,40 @@
 ;;; global setting
 (ac-config-default)
 (global-auto-complete-mode t)
+
+;;; --- rainbow-delimiters-mode
+(use-package rainbow-delimiters
+  :diminish rainbow-delimiters-mode
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
+
+;;; --- volatile-highlights-mode
+ (use-package volatile-highlights
+    :diminish volatile-highlights-mode
+    :hook
+    (after-init . volatile-highlights-mode)
+    :custom-face
+    (vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
+
+;;; --- symbol highlighting
+;; reference: https://taipapamotohus.com/post/symbol-overlay/
+(use-package symbol-overlay
+  :diminish symbol-overlay-mode
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'symbol-overlay-mode)
+  (add-hook 'markdown-mode-hook #'symbol-overlay-mode)
+  (global-set-key (kbd "M-i") 'symbol-overlay-put)
+  (define-key symbol-overlay-map (kbd "p") 'symbol-overlay-jump-prev)
+  (define-key symbol-overlay-map (kbd "n") 'symbol-overlay-jump-next)
+  (define-key symbol-overlay-map (kbd "C-g") 'symbol-overlay-remove-all))
+
+;; reference: https://qiita.com/blue0513/items/99476f4ae51f17600636
+(require 'diminish)
+(eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
+(eval-after-load "eldoc" '(diminish 'eldoc-mode))
+(eval-after-load "flycheck" '(diminish 'flycheck-mode))
+(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
 
 ;;; --- go mode
 (add-hook 'go-mode-hook 'flycheck-mode)
@@ -310,6 +424,7 @@
 ;; Language Server
 ;; Note: go get golang.org/x/tools/gopls@latest
 (use-package lsp-mode
+  :diminish lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
   :hook (go-mode . lsp-deferred))
@@ -317,43 +432,100 @@
 ;; Optional - provides fancier overlays.
 (use-package lsp-ui
   :ensure t
-  :commands lsp-ui-mode)
-
-;; Company mode is a standard completion package that works well with lsp-mode.
-(use-package company
-  :ensure t
-  :config
-  ;; Optionally enable completion-as-you-type behavior.
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 1))
-(add-hook 'go-mode-hook 'company-mode)
-
-;; setting for company mode
-;; reference: https://qiita.com/kod314/items/3a31719db27a166d2ec1
-(with-eval-after-load 'company
-      (setq company-auto-expand t)
-      (setq company-transformers '(company-sort-by-backend-importance))
-      (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 2)
-      (setq company-selection-wrap-around t)
-      (setq completion-ignore-case t)
-      (setq company-dabbrev-downcase nil)
-      (global-set-key (kbd "C-M-i") 'company-complete)
-      (define-key company-active-map (kbd "C-n") 'company-select-next)
-      (define-key company-active-map (kbd "C-p") 'company-select-previous)
-      ;; use tab for completion
-      (define-key company-active-map [tab] 'company-complete-selection)
-      ;; C-h is disable for ackspace
-      (define-key company-active-map (kbd "C-h") nil)
-      ;; C-Shift-h shows document
-      (define-key company-active-map (kbd "C-S-h") 'company-show-doc-buffer)
-      )
+  :commands lsp-ui-mode
+  :custom
+  ;; lsp-ui-doc
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-header t)
+  (lsp-ui-doc-include-signature t)
+  ;; top, bottom, or at-point
+  (lsp-ui-doc-position 'top)
+  (lsp-ui-doc-max-width 150)
+  (lsp-ui-doc-max-height 30)
+  (lsp-ui-doc-use-childframe t)
+  (lsp-ui-doc-use-webkit t)
+  ;; lsp-ui-flycheck
+  (lsp-ui-flycheck-enable t)
+  ;; lsp-ui-peek
+  (lsp-ui-peek-enable t)
+  (lsp-ui-peek-peek-height 20)
+  (lsp-ui-peek-list-width 50)
+  :hook (lsp-mode . lsp-ui-mode))
 
 ;; company-lsp integrates company mode completion with lsp-mode.
 ;; completion-at-point also works out of the box but doesn't support snippets.
 (use-package company-lsp
   :ensure t
-  :commands company-lsp)
+  :commands company-lsp
+  :custom
+  ;; always using cache
+  (company-lsp-cache-candidates t)
+  (company-lsp-async t)
+  (company-lsp-enable-recompletion nil))
+
+;; Company mode is a standard completion package that works well with lsp-mode.
+(add-hook 'go-mode-hook 'company-mode)
+
+;;; --- company-mode
+(use-package company
+  :diminish company-mode
+  :ensure t
+  :defer t
+  :config
+  ;; Optionally enable completion-as-you-type behavior.
+  ;; reference1: https://qiita.com/kod314/items/3a31719db27a166d2ec1
+  ;; reference2: https://qiita.com/blue0513/items/c0dc35a880170997c3f5
+  ;; reference3: https://qiita.com/kai2nenobu/items/5dfae3767514584f5220
+  (setq company-auto-expand t)
+  (setq company-transformers '(company-sort-by-backend-importance))
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1)
+  (setq company-selection-wrap-around t)
+  (setq completion-ignore-case t)
+  (setq company-dabbrev-downcase nil)
+
+  (global-set-key (kbd "C-M-i") 'company-complete)
+
+  ;; Use quickhelp-mode
+  (company-quickhelp-mode)
+
+  ;; C-n and C-p selects auto completed words
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  ;; use C-n and C-p when search mode.
+  ;; C-s filters words.
+  (define-key company-search-map (kbd "C-n") 'company-select-next)
+  (define-key company-search-map (kbd "C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
+  ;; use tab for completion
+  (define-key company-active-map (kbd "C-i") 'company-complete-selection)
+  (define-key company-active-map [tab] 'company-complete-selection)
+  ;; C-h is disable for ackspace
+  (define-key company-active-map (kbd "C-h") nil)
+  ;; C-Shift-h shows document
+  (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
+
+  ;; color setting.
+  (set-face-attribute 'company-tooltip nil
+                      :foreground "black"
+                      :background "lightgray")
+  (set-face-attribute 'company-preview-common nil
+                      :foreground "dark gray"
+                      :background "black"
+                      :underline t)
+  (set-face-attribute 'company-tooltip-selection nil
+                      :background "steelblue"
+                      :foreground "white")
+  (set-face-attribute 'company-tooltip-common nil
+                      :foreground "black"
+                      :underline t)
+  (set-face-attribute 'company-tooltip-common-selection nil
+                      :foreground "white"
+                      :background "steelblue"
+                      :underline t)
+  (set-face-attribute 'company-tooltip-annotation nil
+                      :foreground "red")
+  )
 
 ;;; tuareg-mode
 (setq auto-mode-alist
@@ -395,26 +567,39 @@
 						 (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
 						 (define-key company-active-map (kbd "<tab>") 'company-complete)
 						 ))
-;;; set ipython
+;; set ipython
 (setq python-shell-interpreter "ipython"
 			python-shell-interpreter-args "-i")
-;;; refactor tool
-;;; NOTE: pip install autopep8 before.
+;; refactor tool
+;; NOTE: pip install autopep8 before.
 (require 'py-autopep8)
 (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 (setq py-autopep8-options '("--max-line-length=80"))
-;;; fly check (flymake-python-pyflakes requires flymake-easy)
-;;; NOTE: pip install flake8 before.
+;; fly check (flymake-python-pyflakes requires flymake-easy)
+;; NOTE: pip install flake8 before.
 (require 'flymake-easy)
 (require 'flymake-python-pyflakes)
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 (setq flymake-python-pyflakes-executable "flake8")
-(require 'yasnippet)
-(yas-global-mode 1)
-;;; pyvenv is switching some resource.
+;; pyvenv is switching some resource.
 (pyvenv-mode 1)
 (pyvenv-tracking-mode 1)
 
+;;; --- yasnippet
+(use-package yasnippet
+  :ensure t
+  :diminish yas-minor-mode
+  :bind (:map yas-minor-mode-map
+              ("C-x i i" . 'yas-insert-snippet)
+              ("C-x i n" . 'yas-new-snippet)
+              ("C-x i v" . 'yas-visit-snippet-file)
+              ("C-x i l" . 'yas-describe-tables)
+              ("C-x i g" . 'yas-reload-all))
+  :config
+  (yas-global-mode 1)
+  (setq yas-prompt-functions '(yas-ido-prompt))
+  (setq yas-snippet-dirs '("~/.emacs.d/yasnippets")))
+  
 ;;; --- ruby-mode
 (autoload 'ruby-mode "ruby-mode"
     "Mode for editing ruby source files" t)
@@ -447,6 +632,22 @@
 (setq org-default-notes-files (concat org-directory "agenda.org"))
 (setq org-agenda-files (list org-directory))
 
+;;; --- others document mode
+(use-package csv-mode)
+(use-package yaml-mode)
+(use-package dockerfile-mode
+  :mode ("Dockerfile\\'" . dockerfile-mode))
+
+;; I don't like this indent
+;; (use-package highlight-indent-guides
+;;   :diminish
+;;   :hook
+;;   ((prog-mode yaml-mode) . highlight-indent-guides-mode)
+;;   :custom
+;;   (highlight-indent-guides-auto-enabled t)
+;;   (highlight-indent-guides-responsive t)
+;;   (highlight-indent-guides-method 'character))
+
 ;;; --- vue mode
 (require 'vue-mode)
 (require 'mmm-mode)
@@ -460,6 +661,7 @@
 (add-hook 'vue-mode-hook 'my-vue-mode-hook)
 
 ;;; --- typescript mode
+
 ;; need to install typescript-mode.
 (require 'typescript-mode)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
@@ -472,43 +674,6 @@
             (setq flycheck-check-syntax-automatically '(save mode-enabled))
             (eldoc-mode t)
             (company-mode-on)))
-;; customize company mode for typescript.
-(require 'company)
-;; to choice C-n, C-p.
-(define-key company-active-map (kbd "M-n") nil)
-(define-key company-active-map (kbd "M-p") nil)
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-;; reset C-h from default mapping.
-(define-key company-active-map (kbd "C-h") nil)
-;; use tab for select item from map.
-(define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-;; show document.
-(define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
-
-(setq company-minimum-prefix-length 1)
-(setq company-selection-wrap-around t)
-
-;; color setting.
-(set-face-attribute 'company-tooltip nil
-                    :foreground "black"
-                    :background "lightgray")
-(set-face-attribute 'company-preview-common nil
-                    :foreground "dark gray"
-                    :background "black"
-                    :underline t)
-(set-face-attribute 'company-tooltip-selection nil
-                    :background "steelblue"
-                    :foreground "white")
-(set-face-attribute 'company-tooltip-common nil
-                    :foreground "black"
-                    :underline t)
-(set-face-attribute 'company-tooltip-common-selection nil
-                    :foreground "white"
-                    :background "steelblue"
-                    :underline t)
-(set-face-attribute 'company-tooltip-annotation nil
-                    :foreground "red")
 
 ;;; --- Web mode (php, pl, js, html)
 (require 'web-mode)
@@ -523,11 +688,11 @@
   (setq tab-width 2)
 )
 (add-hook 'web-mode-hook 'web-mode-hook)
-;;; set auto closing pairing
+;; set auto closing pairing
 (setq web-mode-auto-close-style 1)
 (setq web-mode-tag-auto-close-style t)
 (setq web-mode-enable-auto-pairing t)
-;;; 
+;; set mode alist
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
@@ -535,12 +700,12 @@
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
 
-;;; markdown mode
+;;; --- markdown mode
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
-;;; markdown preview mode
+;;; --- markdown preview mode
 (setq markdown-preview-stylesheets
       (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
 
@@ -620,13 +785,14 @@
  '(company-tooltip ((t (:background "lightgray" :foreground "black"))))
  '(company-tooltip-common ((((type x)) (:inherit company-tooltip :weight bold)) (t (:inherit company-tooltip))))
  '(company-tooltip-common-selection ((((type x)) (:inherit company-tooltip-selection :weight bold)) (t (:inherit company-tooltip-selection))))
- '(company-tooltip-selection ((t (:background "steelblue" :foreground "white")))))
+ '(company-tooltip-selection ((t (:background "steelblue" :foreground "white"))))
+ '(vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
 (put 'upcase-region 'disabled nil)
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
-;; --- satysfi mode
+;;; --- satysfi mode
 (require 'satysfi)
 (add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
 (add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
