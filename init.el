@@ -196,10 +196,23 @@
 (package-initialize)
 ;;; --- emacs package install ---
 (defvar my-packages '(
+                      ;;; --- useful tools ---
+                      which-key
+                      ido-completing-read+
+                      diminish
+                      volatile-highlights
+                      highlight-indent-guides
+                      symbol-overlay
+                      ido-select-window
+                      ido-migemo
+                      smex
                       ;;; --- refactoring ---
                       anzu
                       ;;; --- auto-complete ---
                       auto-complete
+                      company
+                      company-quickhelp
+                      company-quickhelp-terminal
                       ;;; --- load path from shell ---
                       exec-path-from-shell
                       ;;; --- ruby mode ---
@@ -215,15 +228,15 @@
                       flymake-easy
                       flymake-python-pyflakes
                       pyvenv
+                      ;;; --- go mode ---
+                      go-mode
+                      go-dlv
                       ;;; --- vue mode ---
                       vue-mode
                       mmm-mode
                       vue-html-mode
                       ssass-mode
                       edit-indirect
-                      ;;; --- go mode ---
-                      go-mode
-                      go-dlv
                       ;;; --- scss mode ---
                       scss-mode
                       ;;; --- web mode ---
@@ -244,17 +257,21 @@
                       caml
                       tuareg
                       ocp-indent
-                      ;;; flymake-tuareg
-                      ;;; --- markdown mode ---
-                      markdown-mode
-                      ;;; --- org mode ---
-                      org
+                      ;flymake-tuareg
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
                       lsp-ui
                       company-lsp
+                      ;;; --- markdown mode ---
+                      markdown-mode
+                      ;;; --- org mode ---
+                      org
                       ;;; --- yaml-mode ---
                       yaml-mode
+                      ;;; --- dockerfile-mode ---
+                      dockerfile-mode
+                      ;;; --- cvs-mode ---
+                      csv-mode
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -358,7 +375,7 @@
      ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
  '(package-selected-packages
    (quote
-    (diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-ubiquitous ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package lsp-mode markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package lsp-mode markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8)))))
 
 ;;; --- auto complete
@@ -381,12 +398,12 @@
   (prog-mode . rainbow-delimiters-mode))
 
 ;;; --- volatile-highlights-mode
- (use-package volatile-highlights
-    :diminish volatile-highlights-mode
-    :hook
-    (after-init . volatile-highlights-mode)
-    :custom-face
-    (vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
+;; (use-package volatile-highlights
+;;   :diminish volatile-highlights-mode
+;;   :hook
+;;   (after-init . volatile-highlights-mode)
+;;   :custom-face
+;;   (vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
 
 ;;; --- symbol highlighting
 ;; reference: https://taipapamotohus.com/post/symbol-overlay/
