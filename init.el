@@ -424,7 +424,6 @@
 (eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
 (eval-after-load "eldoc" '(diminish 'eldoc-mode))
 (eval-after-load "flycheck" '(diminish 'flycheck-mode))
-(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
 
 ;;; --- go mode
 (add-hook 'go-mode-hook 'flycheck-mode)
