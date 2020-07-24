@@ -241,6 +241,8 @@
                       vue-html-mode
                       ssass-mode
                       edit-indirect
+                      ;;; --- typescript mode ---
+                      typescript-mode
                       ;;; --- scss mode ---
                       scss-mode
                       ;;; --- web mode ---
