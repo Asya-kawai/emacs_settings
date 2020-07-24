@@ -209,6 +209,7 @@
                       symbol-overlay
                       volatile-highlights
                       highlight-indent-guides
+                      flycheck
                       ;;; --- refactoring ---
                       anzu
                       ;;; --- auto-complete ---
