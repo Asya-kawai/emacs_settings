@@ -243,6 +243,7 @@
                       edit-indirect
                       ;;; --- typescript mode ---
                       typescript-mode
+                      tide
                       ;;; --- scss mode ---
                       scss-mode
                       ;;; --- web mode ---
