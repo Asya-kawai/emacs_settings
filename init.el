@@ -194,9 +194,11 @@
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
+(setq package-enable-at-startup nil)
 ;;; --- emacs package install ---
 (defvar my-packages '(
                       ;;; --- useful tools ---
+                      use-package
                       which-key
                       smex
                       ido-completing-read+
@@ -606,7 +608,7 @@
 (use-package yasnippet
   :ensure t
   :diminish yas-minor-mode
-  :bind (:map yas-minor-mode-map
+  :bind (:map yas-minor-mode-map             
               ("C-x i i" . 'yas-insert-snippet)
               ("C-x i n" . 'yas-new-snippet)
               ("C-x i v" . 'yas-visit-snippet-file)
