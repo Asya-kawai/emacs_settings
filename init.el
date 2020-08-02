@@ -453,7 +453,7 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook ((go-mode . lsp-deferred)
-         (scala-mode . lsp-deferred))
+         (scala-mode . lsp))
   )
 
 ;; Optional - provides fancier overlays.
@@ -632,6 +632,9 @@
     "Mode for editing ruby source files" t)
 
 ;;; --- scala-mode
+;; reference: https://scalameta.org/metals/docs/editors/emacs.html
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
 ;; reference: https://tarao.hatenablog.com/entry/metals
 ;; git clone https://github.com/tarao/scala-bootstrap-el.git
 (require 'scala-bootstrap)
