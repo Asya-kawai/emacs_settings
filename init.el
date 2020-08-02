@@ -433,8 +433,11 @@
 (eval-after-load "eldoc" '(diminish 'eldoc-mode))
 (eval-after-load "flycheck" '(diminish 'flycheck-mode))
 
-;;; --- go mode
-(add-hook 'go-mode-hook 'flycheck-mode)
+;;; --- flycheck-mode
+(use-package flycheck
+  :hook ((go-mode . flycheck-mode)
+         (scala-mode . flycheck-mode))
+  )
 
 ;; reference: https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
 ;; reference: https://blog.web-apps.tech/lsp-mode-with-gopls/
