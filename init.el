@@ -190,7 +190,7 @@
 ;;; --- emacs package install ---
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
@@ -265,6 +265,8 @@
                       tuareg
                       ocp-indent
                       ;flymake-tuareg
+                      ;; --- scala util ---
+                      scala-mode
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
                       lsp-ui
@@ -450,7 +452,9 @@
   :diminish lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
-  :hook (go-mode . lsp-deferred))
+  :hook ((go-mode . lsp-deferred)
+         (scala-mode . lsp-deferred))
+  )
 
 ;; Optional - provides fancier overlays.
 (use-package lsp-ui
@@ -487,8 +491,6 @@
   (company-lsp-enable-recompletion nil))
 
 ;; Company mode is a standard completion package that works well with lsp-mode.
-(add-hook 'go-mode-hook 'company-mode)
-
 ;;; --- company-mode
 (use-package company
   :diminish company-mode
@@ -548,6 +550,8 @@
                       :underline t)
   (set-face-attribute 'company-tooltip-annotation nil
                       :foreground "red")
+  :hook ((go-mode . company-mode)
+         (scala-mode . company-mode))
   )
 
 ;;; tuareg-mode
@@ -626,6 +630,17 @@
 ;;; --- ruby-mode
 (autoload 'ruby-mode "ruby-mode"
     "Mode for editing ruby source files" t)
+
+;;; --- scala-mode
+;; reference: https://tarao.hatenablog.com/entry/metals
+;; git clone https://github.com/tarao/scala-bootstrap-el.git
+(require 'scala-bootstrap)
+(custom-set-variables
+ '(scala-bootstrap:bin-directory (expand-file-name "bin" "~")))
+(add-hook 'scala-mode-hook
+  '(lambda ()
+     (scala-bootstrap:with-metals-installed
+      (scala-bootstrap:with-bloop-server-started))))
 
 ;;; --- textlint flycheck
 (flycheck-define-checker textlint
@@ -816,13 +831,13 @@
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;;; --- satysfi mode
-(require 'satysfi)
-(add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
-(add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
-(add-hook 'satysfi-mode '(lambda () (setq tab-widh 2 indent-tab-mode nil)))
-(setq satysfi-command "satysfi")
-  ; set the command for typesetting (default: "satysfi -b")
-(setq satysfi-pdf-viewer-command "sumatrapdf")
-  ; set the command for opening PDF files (default: "open")
+;;(require 'satysfi)
+;;(add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
+;;(add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
+;;(add-hook 'satysfi-mode '(lambda () (setq tab-widh 2 indent-tab-mode nil)))
+;;(setq satysfi-command "satysfi")
+  ;; set the command for typesetting (default: "satysfi -b")
+;;(setq satysfi-pdf-viewer-command "sumatrapdf")
+  ;; set the command for opening PDF files (default: "open")
 
 ;;(require 'restclient-vscode-compatible)
