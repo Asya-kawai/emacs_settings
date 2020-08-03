@@ -267,6 +267,7 @@
                       ;flymake-tuareg
                       ;; --- scala util ---
                       scala-mode
+                      sbt-mode
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
                       lsp-ui
@@ -639,6 +640,17 @@
 ;; reference: https://scalameta.org/metals/docs/editors/emacs.html
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+  ;; sbt-supershell kills sbt-mode:
+  ;; https://github.com/hvesalai/emacs-sbt-mode/issues/152
+  (setq sbt:program-options '("-Dsbt.supershell=false")))
 ;; reference: https://tarao.hatenablog.com/entry/metals
 ;; git clone https://github.com/tarao/scala-bootstrap-el.git
 (require 'scala-bootstrap)
