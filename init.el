@@ -263,7 +263,6 @@
                       ;;; --- ocaml util ---
                       caml
                       tuareg
-                      ocp-indent
                       ;flymake-tuareg
                       ;; --- scala util ---
                       scala-mode
@@ -385,7 +384,7 @@
      ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
  '(package-selected-packages
    (quote
-    (lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit ocp-indent jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8))))
  '(scala-bootstrap:bin-directory (expand-file-name "bin" "~")))
 
@@ -458,7 +457,8 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook ((go-mode . lsp-deferred)
-         (scala-mode . lsp))
+         (scala-mode . lsp-deferred)
+         (tuareg-mode . lsp-deferred))
   )
 
 ;; Optional - provides fancier overlays.
@@ -556,7 +556,8 @@
   (set-face-attribute 'company-tooltip-annotation nil
                       :foreground "red")
   :hook ((go-mode . company-mode)
-         (scala-mode . company-mode))
+         (scala-mode . company-mode)
+         (tuareg-mode . company-mode))
   )
 
 ;;; tuareg-mode
@@ -566,6 +567,11 @@
       '("\\.eliom$" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
 (add-hook 'tuareg-mode-hook 'utop-minor-mode)
+;; auto format by using ocamlformat
+;; reference: https://github.com/ocaml-ppx/ocamlformat
+(add-hook 'tuareg-mode-hook (lambda ()
+  (define-key tuareg-mode-map (kbd "C-M-<tab>") #'ocamlformat)
+  (add-hook 'before-save-hook #'ocamlformat-before-save)))
 
 ;;; --- flymake-tuareg
 ;;(require 'flymake-tuareg)
