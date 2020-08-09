@@ -297,8 +297,9 @@
 ;; reference: https://qiita.com/tadsan/items/33ebb8db2271897a462b
 (ido-mode 1)
 (ido-everywhere 1)
-(setq ido-enable-flex-matching t) 
+(setq ido-enable-flex-matching t)
 (setq ido-enable-dot-prefix t)
+(setq ido-auto-merge-delay-time 5)
 
 ;; Use smex(ido; Emacs default completion mode), Not use amx.
 (use-package smex
