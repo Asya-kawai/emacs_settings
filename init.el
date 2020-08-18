@@ -281,6 +281,8 @@
                       dockerfile-mode
                       ;;; --- cvs-mode ---
                       csv-mode
+                      ;;; --- plantuml-mode ---
+                      plantuml-mode
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -362,6 +364,9 @@
 )
 
 ;;; --- exec path from shell ---
+;; disable to appear error message when using environment variables.
+;; reference: https://stackoverflow.com/questions/35286203/exec-path-from-shell-message-when-starting-emacs
+(setq exec-path-from-shell-check-startup-files nil)
 ;; load environment variables defined in shell.
 (exec-path-from-shell-initialize)
 
@@ -387,7 +392,7 @@
      ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
  '(package-selected-packages
    (quote
-    (ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
+    (plantuml-mode ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
  '(safe-local-variable-values (quote ((enconding . utf-8))))
  '(scala-bootstrap:bin-directory (expand-file-name "bin" "~")))
 
@@ -563,19 +568,6 @@
          (tuareg-mode . company-mode))
   )
 
-;;; tuareg-mode
-(setq auto-mode-alist
-      (cons '("\\.ml[iylp]?$" . tuareg-mode) auto-mode-alist))
-(add-to-list 'auto-mode-alist
-      '("\\.eliom$" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
-(add-hook 'tuareg-mode-hook 'utop-minor-mode)
-;; auto format by using ocamlformat
-;; reference: https://github.com/ocaml-ppx/ocamlformat
-(add-hook 'tuareg-mode-hook (lambda ()
-  (define-key tuareg-mode-map (kbd "C-M-<tab>") #'ocamlformat)
-  (add-hook 'before-save-hook #'ocamlformat-before-save)))
-
 ;;; --- flymake-tuareg
 ;;(require 'flymake-tuareg)
 ;;(add-hook 'tuareg-mode-hook 'flymake-tuareg-load)
@@ -703,6 +695,15 @@
 (use-package dockerfile-mode
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
+;;; plantuml-mode doesn't work.
+;; reference: https://github.com/skuro/plantuml-mode
+;;(use-package plantuml-mode
+  ;;:init
+  ;; NOTE: apt install plantuml
+  ;;(setq plantuml-options "-charset UTF-8")
+  ;;(setq plantuml-executable-path "/usr/bin/plantuml")
+  ;;(setq plantuml-default-exec-mode 'executable))
+
 ;; I don't like this indent
 ;; (use-package highlight-indent-guides
 ;;   :diminish
@@ -818,12 +819,6 @@
 ;;; minor mode
 (autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
 
-;;; omake mode
-;;(setq load-path
-;;      (append '(expand-file-name
-;;                "/usr/local/share/emacs/site-lisp/omake-mode") load-path))
-;;(require 'omake)
-
 ;;; flymake mode
 (require 'flymake)
 (push '("File \"\\(.*\\)\", line \\([0-9]+\\), characters \\([0-9]+\\)--?\\([0-9]+\\):\\(.*\\)" 1 2 3 5) flymake-err-line-patterns)
@@ -834,6 +829,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  End of OPAM configuration   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; tuareg-mode
+(setq auto-mode-alist
+      (cons '("\\.ml[iylp]?$" . tuareg-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist
+      '("\\.eliom$" . tuareg-mode))
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
+(add-hook 'tuareg-mode-hook 'utop-minor-mode)
+;; auto format by using ocamlformat
+;; reference: https://github.com/ocaml-ppx/ocamlformat
+(require 'ocamlformat)
+(add-hook 'tuareg-mode-hook (lambda ()
+  (define-key tuareg-mode-map (kbd "C-M-<tab>") #'ocamlformat)
+  (add-hook 'before-save-hook #'ocamlformat-before-save)))
 
 ;;; Set language 2
 ;;; Must put bottom !!!
