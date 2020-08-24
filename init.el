@@ -3,7 +3,6 @@
 ;;; Common Lisp extensions for Emacs
 (require 'cl)
 
-
 ;;; set default mode to scrach buffer
 (setq default-major-mode 'lisp-interaction-mode)
 
@@ -697,12 +696,12 @@
 
 ;;; plantuml-mode doesn't work.
 ;; reference: https://github.com/skuro/plantuml-mode
-;;(use-package plantuml-mode
-  ;;:init
-  ;; NOTE: apt install plantuml
-  ;;(setq plantuml-options "-charset UTF-8")
-  ;;(setq plantuml-executable-path "/usr/bin/plantuml")
-  ;;(setq plantuml-default-exec-mode 'executable))
+ (use-package plantuml-mode
+   :init
+   ;; NOTE: apt install plantuml
+   (setq plantuml-options "-charset UTF-8")
+   (setq plantuml-executable-path "/usr/bin/plantuml")
+   (setq plantuml-default-exec-mode 'executable))
 
 ;; I don't like this indent
 ;; (use-package highlight-indent-guides
