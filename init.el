@@ -100,10 +100,11 @@
     (C-toggle-hungry-state 1)
 	))
 
-;;; Auto Fill Mode
-;;(setq fill-column 80)
-;;(setq-default auto-fill-mode -1)
-;;(setq text-mode-hook 'turn-on-auto-fill)
+;;; Display-fill-column-indicator-mode
+;; Sets 80 columns rule.
+(setq-default fill-column 80)
+;; Supports display-fill-column-indicator-mode at since ver27.
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;;; Time
 (setq display-time-day-and-date t)
@@ -112,8 +113,7 @@
 	'((format "%s/%s/%s(%s) %s:%s"
 		year month day
 		dayname
-		24-hours minutes)
-	))
+		24-hours minutes)))
 
 ;;; Indicate Function
 (which-function-mode 1)
@@ -382,17 +382,15 @@
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
  '(avy-migemo-function-names
-   (quote
-    (swiper--add-overlays-migemo
+   '(swiper--add-overlays-migemo
      (swiper--re-builder :around swiper--re-builder-migemo-around)
      (ivy--regex :around ivy--regex-migemo-around)
      (ivy--regex-ignore-order :around ivy--regex-ignore-order-migemo-around)
      (ivy--regex-plus :around ivy--regex-plus-migemo-around)
-     ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
+     ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full))
  '(package-selected-packages
-   (quote
-    (plantuml-mode ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl)))
- '(safe-local-variable-values (quote ((enconding . utf-8))))
+   '(plantuml-mode ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl))
+ '(safe-local-variable-values '((enconding . utf-8)))
  '(scala-bootstrap:bin-directory (expand-file-name "bin" "~")))
 
 ;;; --- auto complete
