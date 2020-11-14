@@ -4,7 +4,7 @@
 (require 'cl)
 
 ;;; set default mode to scrach buffer
-(setq default-major-mode 'lisp-interaction-mode)
+(setq default-major-mode 'emacs-lisp-mode)
 
 ;;; debug on
 ;; (setq debug-on-error t)
@@ -23,6 +23,9 @@
 (require '1row-scroll)
 ;;; call reloader
 (require 'reloader)
+;;; https://github.com/danamlund/emacs-makefile-runner
+(require 'makefile-runner)
+(global-set-key (kbd "<C-f11>") 'makefile-runner)
 
 ;;; Set language
 (set-language-environment "Japanese")
@@ -370,28 +373,20 @@
 (exec-path-from-shell-initialize)
 
 ;;; --- anzu (refactoring mode) ---
-(global-anzu-mode +1)
-(setq anzu-use-migemo t)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(anzu-deactivate-region t)
- '(anzu-mode-lighter "")
- '(anzu-replace-to-string-separator " => ")
- '(anzu-search-threshold 1000)
- '(avy-migemo-function-names
-   '(swiper--add-overlays-migemo
-     (swiper--re-builder :around swiper--re-builder-migemo-around)
-     (ivy--regex :around ivy--regex-migemo-around)
-     (ivy--regex-ignore-order :around ivy--regex-ignore-order-migemo-around)
-     (ivy--regex-plus :around ivy--regex-plus-migemo-around)
-     ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full))
- '(package-selected-packages
-   '(plantuml-mode ocp-indent sbt-mode scala-mode lsp-mode diminish volatile-highlights highlight-indent-guides dockerfile-mode csv-mode symbol-overlay ido-completing-read+ ido-select-window ido-migemo ido-vertical-mode smex company-quickhelp-terminal which-key company-quickhelp go-eldoc company-lsp proof-general swap-buffers swap-regions gnu-elpa-keyring-update go-dlv yaml-mode markdown-preview-mode markdown-preview-eww tide typescript-mode lsp-ui use-package markdown-mode exec-path-from-shell go-complete go-mode flycheck web-mode vue-mode tuareg scss-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 php-mode php-completion paredit jedi ipython flymake-python-pyflakes elpy coffee-fof caml cake2 cake auto-indent-mode anzu ac-nrepl))
- '(safe-local-variable-values '((enconding . utf-8)))
- '(scala-bootstrap:bin-directory (expand-file-name "bin" "~")))
+(use-package anzu
+  :ensure
+  :diminish anzu-mode
+  :init
+  (global-anzu-mode +1)
+  :config
+  (global-set-key [remap query-replace] 'anzu-query-replace)
+  (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+  (setq anzu-deactivate-region t)
+  (setq anzu-mode-lighter "")
+  (setq anzu-replace-to-string-separator " => ")
+  (setq anzu-replace-threshold 1000)
+  (setq anzu-search-threshold 1000)
+  (setq anzu-use-migemo t))
 
 ;;; --- auto complete
 (require 'auto-complete)
