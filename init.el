@@ -75,8 +75,8 @@
 (setq delete-auto-save-files t)
 
 ;;; bar setting
-;(tool-bar-mode 0)
-;(menu-bar-mode 0)
+;;(tool-bar-mode 0)
+;;(menu-bar-mode 0)
 (scroll-bar-mode 0)
 
 ;;; No init-screen
@@ -180,13 +180,6 @@
 ;; C-x C don't saves.
 (define-key ctl-x-map "\C-c" 'see-you-again)
 (define-key ctl-x-map "C" 'save-buffers-kill-emacs)
-
-;;; R-mode
-;;(add-to-list 'load-path "~/usr/share/emacs/site-lisp/ess")
-;;(setq auto-mode-alist
-;;	  (cons (cons "\\.r$" 'R-mode) auto-mode-alist))
-;;(autoload 'R-mode "ess-site" "Emacs Speaks Statistics mode" t)
-;;(setq ess-ask-for-ess-directory nil)
 
 ;;; unformal repositories 'mepla' and 'marmalade'
 ;;; --- emacs package install ---
@@ -436,19 +429,9 @@
 
 ;;; --- flycheck-mode
 (use-package flycheck
-  :hook ((go-mode . flycheck-mode)
-         (scala-mode . flycheck-mode))
-  )
-
-;; reference: https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
-;; reference: https://blog.web-apps.tech/lsp-mode-with-gopls/
-
-;; Set up before-save hooks to format buffer and add/delete imports.
-;; Make sure you don't have other gofmt/goimports hooks enabled.
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  :ensure t
+  :config
+  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
 
 ;; Language Server
 ;; Note: go get golang.org/x/tools/gopls@latest
@@ -456,10 +439,9 @@
   :diminish lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
-  :hook ((go-mode . lsp-deferred)
-         (scala-mode . lsp-deferred)
-         (tuareg-mode . lsp-deferred))
-  )
+  :custom ((lsp-inhibit-message t)
+           (lsp-message-project-root-warning t)
+           (create-lockfiles nil)))
 
 ;; Optional - provides fancier overlays.
 (use-package lsp-ui
@@ -554,61 +536,77 @@
                       :background "steelblue"
                       :underline t)
   (set-face-attribute 'company-tooltip-annotation nil
-                      :foreground "red")
-  :hook ((go-mode . company-mode)
-         (scala-mode . company-mode)
-         (tuareg-mode . company-mode))
-  )
+                      :foreground "red"))
 
-;;; --- flymake-tuareg
-;;(require 'flymake-tuareg)
-;;(add-hook 'tuareg-mode-hook 'flymake-tuareg-load)
+
+;;; --- go-mode
+;; reference: https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+;; reference: https://blog.web-apps.tech/lsp-mode-with-gopls/
+;;
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+(use-package go-mode
+  :ensure t
+  :init (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . company-mode)))
 
 ;;; --- python-mode
 ;;; extends python mode
-(add-hook 'python-mode-hook
-					'(lambda ()
-						 (setq indent-tab-mode nil)
-						 (setq indent-level 4)
-						 (setq python-indent 4)
-						 (setq tab-width 4)
-						 (package-initialize)
-						 (elpy-enable)
-						 (elpy-mode)
-						 ))
-(add-hook 'elpy-mode-hook
-					'(lambda ()
-						 (elpy-use-ipython)
-						 ;;; fix prompt
-						 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
-						 ;;; quickrun C-c C-r
-						 ;;(define-key elpy-mode-map "\C-c\C-r" 'quickrun)
-						 ;;; disable auto complete mode
-						 (auto-complete-mode -1)
-						 ;;; use jedi
-						 (setq elpy-rpc-backend "jedi")
-						 (define-key company-active-map (kbd "\C-n") 'company-select-next)
-						 (define-key company-active-map (kbd "\C-p") 'company-select-previous)
-						 (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-						 (define-key company-active-map (kbd "<tab>") 'company-complete)
-						 ))
-;; set ipython
-(setq python-shell-interpreter "ipython"
-			python-shell-interpreter-args "-i")
+(use-package python-mode
+  :ensure t
+  :config
+	(setq indent-tab-mode nil)
+	(setq indent-level 4)
+	(setq python-indent 4)
+	(setq tab-width 4))
+
+(use-package elpy
+  :ensure t
+  :defer t
+  :after (python-mode)
+  :commands elpy-enable
+  :hook ((elpy-mode . elpy-use-ipython)
+         (elpy-mode . flycheck-mode)
+         (python-mode . elpy-enable))
+  :config
+  ;; use jedi
+	(setq elpy-rpc-backend "jedi")
+
+	(define-key company-active-map (kbd "\C-n") 'company-select-next)
+	(define-key company-active-map (kbd "\C-p") 'company-select-previous)
+	(define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+	(define-key company-active-map (kbd "<tab>") 'company-complete)
+
+	(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
+
+  ;; set ipython
+  (setq python-shell-interpreter "ipython")
+	(setq	python-shell-interpreter-args "-i"))
+
 ;; refactor tool
 ;; NOTE: pip install autopep8 before.
-(require 'py-autopep8)
-(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-(setq py-autopep8-options '("--max-line-length=80"))
+(use-package py-autopep8
+  :ensure t
+  :hook ((python-mode . py-autopep8-enable-on-save))
+  :config
+  (setq py-autopep8-options '("--max-line-length=80")))
+
 ;; fly check (flymake-python-pyflakes requires flymake-easy)
 ;; NOTE: pip install flake8 before.
-(require 'flymake-easy)
-(require 'flymake-python-pyflakes)
-(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-(setq flymake-python-pyflakes-executable "flake8")
-;; pyvenv is switching some resource.
-(pyvenv-mode 1)
-(pyvenv-tracking-mode 1)
+(use-package flymake-easy
+  :ensure t
+  :defer t)
+(use-package flymake-python-pyflakes
+  :ensure t
+  :after (flymake-easy)
+  :hook ((python-mode-hook . flymake-python-pyflakes-load))
+  :config
+  (setq flymake-python-pyflakes-executable "flake8"))
 
 ;;; --- yasnippet
 (use-package yasnippet
@@ -632,7 +630,9 @@
 ;;; --- scala-mode
 ;; reference: https://scalameta.org/metals/docs/editors/emacs.html
 (use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
+  :mode "\\.s\\(cala\\|bt\\)$"
+  :hook ((scala-mode . lsp-deferred)
+         (scala-mode . flycheck-mode)))
 (use-package sbt-mode
   :commands sbt-start sbt-command
   :config
@@ -652,6 +652,28 @@
   '(lambda ()
      (scala-bootstrap:with-metals-installed
       (scala-bootstrap:with-bloop-server-started))))
+
+;;; --- markdown mode
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :config
+  (setq markdown-preview-stylesheets
+        (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
+  (setq markdown-preview-javascript
+        (list "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js")))
+;;
+;; doesn't work.
+;;
+;; (add-to-list 'markdown-preview-stylesheets
+;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.css")
+;; (add-to-list 'markdown-preview-javascript
+;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js")
+;; (add-to-list 'markdown-preview-javascript
+;;              ("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/contrib/auto-render.js")
 
 ;;; --- textlint flycheck
 (flycheck-define-checker textlint
@@ -682,9 +704,12 @@
 (setq org-agenda-files (list org-directory))
 
 ;;; --- others document mode
-(use-package csv-mode)
-(use-package yaml-mode)
+(use-package csv-mode
+  :ensure t)
+(use-package yaml-mode
+  :ensure t)
 (use-package dockerfile-mode
+  :ensure t
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
 ;;; plantuml-mode doesn't work.
@@ -712,26 +737,34 @@
 (defun my-vue-mode-hook ()
 	"Hooks for vue mode."
 	(setq js-indent-level 2)
+  (setq typescript-indent-level 2)
 	(setq css-indent-offset 2)
   (setq tab-width 2)
 	(setq indent-tab-mode nil)
 )
 (add-hook 'vue-mode-hook 'my-vue-mode-hook)
+(setq mmm-js-mode-enter-hook (lambda () (setq syntax-ppss-table nil)))
+(setq mmm-typescript-mode-enter-hook (lambda () (setq syntax-ppss-table nil)))
 
 ;;; --- typescript mode
-
-;; need to install typescript-mode.
-(require 'typescript-mode)
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(use-package typescript-mode
+  :ensure t
+  :config
+  (setq typescript-indent-level 2)
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode)))
 ;; need to install company and tide.
-(require 'tide)
-(add-hook 'typescript-mode-hook
-          (lambda ()
-            (tide-setup)
-            (flycheck-mode t)
-            (setq flycheck-check-syntax-automatically '(save mode-enabled))
-            (eldoc-mode t)
-            (company-mode-on)))
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (typescript-mdoe . flycheck-mode)
+         (typescript-mode . eldoc-mode)
+         (typescript-mode . lsp-deferred)
+         (typescript-mode . company-mode)
+         (before-save . tide-format-before-save))
+  :config
+  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
 
 ;;; --- Web mode (php, pl, js, html)
 (require 'web-mode)
@@ -758,26 +791,12 @@
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
 
-;;; --- markdown mode
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-
-;;; --- markdown preview mode
-(setq markdown-preview-stylesheets
-      (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
-
-(setq markdown-preview-javascript
-      (list "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js"))
-;;
-;; doesn't work.
-;;
-;; (add-to-list 'markdown-preview-stylesheets
-;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.css")
-;; (add-to-list 'markdown-preview-javascript
-;;              "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.js")
-;; (add-to-list 'markdown-preview-javascript
-;;              ("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/contrib/auto-render.js")
+;;; R-mode
+;;(add-to-list 'load-path "~/usr/share/emacs/site-lisp/ess")
+;;(setq auto-mode-alist
+;;	  (cons (cons "\\.r$" 'R-mode) auto-mode-alist))
+;;(autoload 'R-mode "ess-site" "Emacs Speaks Statistics mode" t)
+;;(setq ess-ask-for-ess-directory nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     OPAM configuration       ;;
@@ -822,19 +841,26 @@
 ;;  End of OPAM configuration   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; tuareg-mode
-(setq auto-mode-alist
-      (cons '("\\.ml[iylp]?$" . tuareg-mode) auto-mode-alist))
-(add-to-list 'auto-mode-alist
-      '("\\.eliom$" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
-(add-hook 'tuareg-mode-hook 'utop-minor-mode)
+;;; --- flymake-tuareg
+;;(require 'flymake-tuareg)
+;;(add-hook 'tuareg-mode-hook 'flymake-tuareg-load)
+
+;;; --- tuareg
+(use-package tuareg
+  :ensure t
+  :mode (("\\.ml[iylp]?$" . tuareg-mode)
+         ("\\.eliom$" . tuareg-mode))
+  :hook ((tuareg-mode . lsp-deferred)
+         (tuareg-mode . utop-minor-mode)
+         (tuareg-mode . company-mode)))
 ;; auto format by using ocamlformat
 ;; reference: https://github.com/ocaml-ppx/ocamlformat
-(require 'ocamlformat)
-(add-hook 'tuareg-mode-hook (lambda ()
-  (define-key tuareg-mode-map (kbd "C-M-<tab>") #'ocamlformat)
-  (add-hook 'before-save-hook #'ocamlformat-before-save)))
+(use-package ocamlformat
+  :ensure t
+  :after tuareg
+  :hook ((before-save . ocamlformat-before-save))
+  :config
+  (define-key tuareg-mode-map (kbd "C-M-<tab>") 'ocamlformat))
 
 ;;; Set language 2
 ;;; Must put bottom !!!
@@ -854,6 +880,7 @@
  '(company-tooltip-selection ((t (:background "steelblue" :foreground "white"))))
  '(vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
 (put 'upcase-region 'disabled nil)
+
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
@@ -867,5 +894,3 @@
   ;; set the command for typesetting (default: "satysfi -b")
 ;;(setq satysfi-pdf-viewer-command "sumatrapdf")
   ;; set the command for opening PDF files (default: "open")
-
-;;(require 'restclient-vscode-compatible)
