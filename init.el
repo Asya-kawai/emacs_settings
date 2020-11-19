@@ -570,23 +570,26 @@
   :defer t
   :after (python-mode)
   :commands elpy-enable
-  :hook ((elpy-mode . elpy-use-ipython)
-         (elpy-mode . flycheck-mode)
+  :init (elpy-enable)
+  :hook ((elpy-mode . flycheck-mode)
          (python-mode . elpy-enable))
   :config
+  (setq elpy-rpc-virtualenv-path 'current)
   ;; use jedi
 	(setq elpy-rpc-backend "jedi")
+  ;; set jupyter
+  ;; https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
+  (setq python-shell-interpreter "jupyter")
+  (setq python-shell-interpreter-args "console --simple-prompt")
+  (setq python-shell-prompt-detect-failure-warning nil)
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+               "jupyter")
 
 	(define-key company-active-map (kbd "\C-n") 'company-select-next)
 	(define-key company-active-map (kbd "\C-p") 'company-select-previous)
 	(define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
 	(define-key company-active-map (kbd "<tab>") 'company-complete)
-
-	(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
-
-  ;; set ipython
-  (setq python-shell-interpreter "ipython")
-	(setq	python-shell-interpreter-args "-i"))
+  )
 
 ;; refactor tool
 ;; NOTE: pip install autopep8 before.
@@ -604,7 +607,7 @@
 (use-package flymake-python-pyflakes
   :ensure t
   :after (flymake-easy)
-  :hook ((python-mode-hook . flymake-python-pyflakes-load))
+  :hook ((python-mode . flymake-python-pyflakes-load))
   :config
   (setq flymake-python-pyflakes-executable "flake8"))
 
