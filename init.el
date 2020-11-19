@@ -735,8 +735,17 @@
 ;;   (highlight-indent-guides-method 'character))
 
 ;;; --- vue mode
-(require 'vue-mode)
-(require 'mmm-mode)
+(use-package vue-mode
+  :ensure t
+  :hook ((vue-mode . company-mode)
+         (vue-mdoe . flycheck-mode)
+         (vue-mode . eldoc-mode)
+         (vue-mode . lsp-deferred)))
+(use-package mmm-mode
+  :ensure t
+  :hook ((mmm-mode . company-mode)
+         (mmm-mdoe . flycheck-mode)
+         (mmm-mode . eldoc-mode)))
 (defun my-vue-mode-hook ()
 	"Hooks for vue mode."
 	(setq js-indent-level 2)
@@ -761,10 +770,10 @@
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
+         (typescript-mode . company-mode)
          (typescript-mdoe . flycheck-mode)
          (typescript-mode . eldoc-mode)
          (typescript-mode . lsp-deferred)
-         (typescript-mode . company-mode)
          (before-save . tide-format-before-save))
   :config
   (setq flycheck-check-syntax-automatically '(save mode-enabled)))
