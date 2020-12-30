@@ -740,21 +740,52 @@
   :hook ((vue-mode . company-mode)
          (vue-mdoe . flycheck-mode)
          (vue-mode . eldoc-mode)
-         (vue-mode . lsp-deferred)))
+         (vue-mode . lsp-deferred))
+  :config
+  (setq js-indent-level 2)
+	(setq css-indent-offset 2))
 (use-package mmm-mode
   :ensure t
   :hook ((mmm-mode . company-mode)
          (mmm-mdoe . flycheck-mode)
-         (mmm-mode . eldoc-mode)))
-(defun my-vue-mode-hook ()
-	"Hooks for vue mode."
-	(setq js-indent-level 2)
-  (setq typescript-indent-level 2)
-	(setq css-indent-offset 2)
-  (setq tab-width 2)
+         (mmm-mode . eldoc-mode))
+  :config
+  ;; (set-face-background 'mmm-default-submode-face "gray13")
 	(setq indent-tab-mode nil)
-)
-(add-hook 'vue-mode-hook 'my-vue-mode-hook)
+  (setq mmm-submode-decoration-level 2)
+  (setq tab-width 2)
+
+  ;; Note: Should check by ESC-x regexp-builder.
+  (mmm-add-classes
+   '((vue-embeded-web-mode
+      :submode vue-mode
+      :front "^<template>\n"
+      :back "</template>")
+     (vue-embeded-js-mode
+      :submode js-mode
+      :front "^<script>\n"
+      :back "^</script>")
+     (vue-embeded-typescript-mode
+      :submode typescript-mode
+      :front "^<script.*lang=\"ts\".*>\n"
+      :back "^</script>")
+     (vue-embeded-css-mode
+      :submode vue-mode
+      :front "^<style>\n"
+      :back "^</style>")
+     (vue-embeded-scss-mode
+      :submode scss-mode
+      :front "^<style.*lang=\"scss\".*>"
+      :back "^</style>")))
+
+  (mmm-add-mode-ext-class nil "\\.vue\\'" 'vue-embeded-web-mode)
+  (mmm-add-mode-ext-class nil "\\.vue\\'" 'vue-embeded-js-mode)
+  (mmm-add-mode-ext-class nil "\\.vue\\'" 'vue-embeded-typescript-mode)
+  (mmm-add-mode-ext-class nil "\\.vue\\'" 'vue-embeded-css-mode)
+  (mmm-add-mode-ext-class nil "\\.vue\\'" 'vue-embeded-scss-mode))
+
+;; Fix js-mode and typescript-mode indent into mmm-mode(vue-mode).
+;; Reference: https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-539711083
 (setq mmm-js-mode-enter-hook (lambda () (setq syntax-ppss-table nil)))
 (setq mmm-typescript-mode-enter-hook (lambda () (setq syntax-ppss-table nil)))
 
@@ -906,3 +937,9 @@
   ;; set the command for typesetting (default: "satysfi -b")
 ;;(setq satysfi-pdf-viewer-command "sumatrapdf")
   ;; set the command for opening PDF files (default: "open")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(auth-source-save-behavior nil))
