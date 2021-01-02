@@ -236,6 +236,7 @@
                       vue-html-mode
                       ssass-mode
                       edit-indirect
+                      add-node-modules-path
                       ;;; --- typescript mode ---
                       typescript-mode
                       tide
@@ -735,12 +736,16 @@
 ;;   (highlight-indent-guides-method 'character))
 
 ;;; --- vue mode
+(use-package add-node-modules-path
+  :ensure t
+  :commands add-node-modules-path)
 (use-package vue-mode
   :ensure t
   :hook ((vue-mode . company-mode)
          (vue-mdoe . flycheck-mode)
          (vue-mode . eldoc-mode)
          (vue-mode . lsp-deferred))
+         (vue-mode . add-node-modules-path))
   :config
   (setq js-indent-level 2)
 	(setq css-indent-offset 2))
@@ -805,6 +810,7 @@
          (typescript-mdoe . flycheck-mode)
          (typescript-mode . eldoc-mode)
          (typescript-mode . lsp-deferred)
+         (typescript-mode . add-node-modules-path)
          (before-save . tide-format-before-save))
   :config
   (setq flycheck-check-syntax-automatically '(save mode-enabled)))
@@ -937,9 +943,12 @@
   ;; set the command for typesetting (default: "satysfi -b")
 ;;(setq satysfi-pdf-viewer-command "sumatrapdf")
   ;; set the command for opening PDF files (default: "open")
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auth-source-save-behavior nil))
+ '(auth-source-save-behavior nil)
+ '(package-selected-packages
+   '(add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal company-lsp coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
