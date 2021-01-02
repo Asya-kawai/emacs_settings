@@ -744,7 +744,7 @@
   :hook ((vue-mode . company-mode)
          (vue-mdoe . flycheck-mode)
          (vue-mode . eldoc-mode)
-         (vue-mode . lsp-deferred))
+         (vue-mode . lsp-deferred)
          (vue-mode . add-node-modules-path))
   :config
   (setq js-indent-level 2)
