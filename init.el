@@ -665,6 +665,7 @@
          ("\\.md\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :config
+  (auto-fill-mode nil)
   (setq markdown-preview-stylesheets
         (list "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css"))
   (setq markdown-preview-javascript
