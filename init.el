@@ -231,6 +231,7 @@
                       ;;; --- go mode ---
                       go-mode
                       go-dlv
+                      gorepl-mode
                       ;;; --- vue mode ---
                       vue-mode
                       mmm-mode
@@ -556,11 +557,16 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
+;; NOTE: go get gore before.
+(use-package gorepl-mode
+  :ensure t)
+
 (use-package go-mode
   :ensure t
   :init (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
   :hook ((go-mode . lsp-deferred)
-         (go-mode . company-mode)))
+         (go-mode . company-mode)
+         (go-mode . gorepl-mode)))
 
 ;;; --- python-mode
 ;;; extends python mode
