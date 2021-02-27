@@ -23,6 +23,12 @@
 (require '1row-scroll)
 ;;; call reloader
 (require 'reloader)
+
+;;; googl search
+;; You can use default pacakge webjump.el instead of google-search.
+;; M-x webjump
+(require 'google-search)
+
 ;;; https://github.com/danamlund/emacs-makefile-runner
 (require 'makefile-runner)
 (global-set-key (kbd "<C-f11>") 'makefile-runner)
