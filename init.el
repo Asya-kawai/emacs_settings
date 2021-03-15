@@ -363,7 +363,15 @@
   (setq migemo-regex-dictionary nil)
   (setq migemo-coding-system 'utf-8-unix)
   (load-library "migemo")
-  (migemo-init)
+  (setq migemo-use-default-isearch-keybinding nil)
+  ;; Don't use default keybinding because wanna use C-y(isearch-yank-kill).
+  ;; (migemo-init)
+
+  ;; Custom keybinding
+  (define-key isearch-mode-map "\C-d" 'migemo-isearch-yank-char)
+  (define-key isearch-mode-map "\C-w" 'migemo-isearch-yank-word)
+  (define-key isearch-mode-map "\C-l" 'migemo-isearch-yank-line)
+  (define-key isearch-mode-map "\M-m" 'migemo-isearch-toggle-migemo)
 )
 
 ;;; --- exec path from shell ---
