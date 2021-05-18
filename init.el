@@ -191,9 +191,9 @@
 ;;; --- emacs package install ---
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://stable.melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+             '(("melpa" . "https://stable.melpa.org/packages/")
+               ("org" . "https://orgmode.org/elpa/")
+               ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (setq package-enable-at-startup nil)
 ;;; --- emacs package install ---
@@ -373,6 +373,11 @@
   (define-key isearch-mode-map "\C-l" 'migemo-isearch-yank-line)
   (define-key isearch-mode-map "\M-m" 'migemo-isearch-toggle-migemo)
 )
+
+;; Persist history over Emacs restarts.
+(use-package savehist
+  :init
+  (savehist-mode))
 
 ;;; --- exec path from shell ---
 ;; disable to appear error message when using environment variables.
