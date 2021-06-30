@@ -881,20 +881,26 @@
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 ;;; Load merlin-mode
+(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+  (when (and opam-share (file-directory-p opam-share))
+    ;; Register Merlin
+    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
+    (autoload 'merlin-mode "merlin" "Merlin mode" t nil)
+    ;; Automatically start it in OCaml buffers
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (add-hook 'caml-mode-hook 'merlin-mode t)
+    ;; Use opam switch to lookup ocamlmerlin binary
+    (setq merlin-command 'opam)))
+(require 'merlin)
+;; Reference: https://github.com/ocaml/merlin
+(require 'merlin-company)
+
 ;;; find shared library installed opam (no neccesarry?)
 (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
   (when (and opam-share (file-directory-p opam-share))
 	(add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))))
-(require 'merlin)
-;;; Start merlin on ocaml files
-(autoload 'merlin-mode "merlin" "Merlin mode" t)
-(add-hook 'tuareg-mode-hook 'merlin-mode t)
-(add-hook 'caml-mode-hook 'merlin-mode t)
-;;; Enable auto-complete
-(setq merlin-use-auto-complete-mode 'easy)
-;;; (setq merlin-use-auto-complete-mode t)
-;;; Use opam switch to lookup ocamlmerlin binary
-(setq merlin-command 'opam)
+
+
 
 ;;; use the opam installed utop
 (require 'utop)
