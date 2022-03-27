@@ -997,7 +997,8 @@
   :ensure t
   :config
   (setq typescript-indent-level 2)
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode)))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode)))
 ;; need to install company and tide.
 (use-package tide
   :ensure t
