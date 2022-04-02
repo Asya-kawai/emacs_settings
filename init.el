@@ -913,6 +913,10 @@
 (use-package dockerfile-mode
   :ensure t
   :mode ("Dockerfile\\'" . dockerfile-mode))
+(use-package json-mode
+  :ensure t
+  :config
+  (setq js-indent-level 2))
 
 ;;; plantuml-mode doesn't work.
 ;; reference: https://github.com/skuro/plantuml-mode
@@ -1156,4 +1160,4 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal company-lsp coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
+   '(json-mode orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal company-lsp coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
