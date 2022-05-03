@@ -278,7 +278,6 @@
                       ;;; --- lsp(language server protocol) mode ---
                       lsp-mode
                       lsp-ui
-                      company-lsp
                       ;;; --- markdown mode ---
                       markdown-mode
                       ;;; --- org mode ---
@@ -639,7 +638,11 @@
   :commands (lsp lsp-deferred)
   :custom ((lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
-           (create-lockfiles nil)))
+           (create-lockfiles nil))
+  :config
+  ;; reference1: https://company-mode.github.io/manual/Backends.html
+  ;; The name of the currently active backend is shown in the mode line and in the output of the command M-x company-diag.
+  (setq lsp-prefer-capf t))
 
 ;; Optional - provides fancier overlays.
 (use-package lsp-ui
@@ -664,18 +667,10 @@
   (lsp-ui-peek-list-width 50)
   :hook (lsp-mode . lsp-ui-mode))
 
-;; company-lsp integrates company mode completion with lsp-mode.
-;; completion-at-point also works out of the box but doesn't support snippets.
-(use-package company-lsp
-  :ensure t
-  :commands company-lsp
-  :custom
-  ;; always using cache
-  (company-lsp-cache-candidates t)
-  (company-lsp-async t)
-  (company-lsp-enable-recompletion nil))
-
 ;; Company mode is a standard completion package that works well with lsp-mode.
+;; company-lsp does not be supported, use company-capf instead.
+;; https://github.com/emacs-lsp/lsp-mode/blob/master/README.md#overview
+;; `Code completion - company-capf / completion-at-point (note that company-lsp is no longer supported).`
 ;;; --- company-mode
 (use-package company
   :diminish company-mode
@@ -693,6 +688,8 @@
   (setq company-selection-wrap-around t)
   (setq completion-ignore-case t)
   (setq company-dabbrev-downcase nil)
+  ;; reference4: https://tam5917.hatenablog.com/entry/2022/01/24/113009
+  (setq company-show-numbers t)
 
   (global-set-key (kbd "C-M-i") 'company-complete)
 
@@ -1160,4 +1157,4 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(json-mode orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal company-lsp coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
+   '(json-mode orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
