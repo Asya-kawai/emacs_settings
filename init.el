@@ -111,9 +111,9 @@
 
 ;;; Display-fill-column-indicator-mode
 ;; Sets 80 columns rule.
-(setq-default fill-column 80)
+;;(setq-default fill-column 80)
 ;; Supports display-fill-column-indicator-mode at since ver27.
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+;;(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;;; Time
 (setq display-time-day-and-date t)
@@ -1047,58 +1047,9 @@
 ;;(autoload 'R-mode "ess-site" "Emacs Speaks Statistics mode" t)
 ;;(setq ess-ask-for-ess-directory nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;     OPAM configuration       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Add opam emacs directory to the load-path
-(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-;;; Load merlin-mode
-(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
-  (when (and opam-share (file-directory-p opam-share))
-    ;; Register Merlin
-    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
-    (autoload 'merlin-mode "merlin" "Merlin mode" t nil)
-    ;; Automatically start it in OCaml buffers
-    (add-hook 'tuareg-mode-hook 'merlin-mode t)
-    (add-hook 'caml-mode-hook 'merlin-mode t)
-    ;; Use opam switch to lookup ocamlmerlin binary
-    (setq merlin-command 'opam)))
-(require 'merlin)
-;; Reference: https://github.com/ocaml/merlin
-(require 'merlin-company)
-
-;;; find shared library installed opam (no neccesarry?)
-(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
-  (when (and opam-share (file-directory-p opam-share))
-	(add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))))
-
-
-
-;;; use the opam installed utop
-(require 'utop)
-(require 'utop-custom)
-(setq utop-command "opam config exec -- utop -emacs")
-;;; Automatically load utop.el
-(autoload 'utop "utop" "Toplevel for OCaml" t)
-;;; minor mode
-(autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
-
-;;; flymake mode
-(require 'flymake)
-(push '("File \"\\(.*\\)\", line \\([0-9]+\\), characters \\([0-9]+\\)--?\\([0-9]+\\):\\(.*\\)" 1 2 3 5) flymake-err-line-patterns)
-(push '("\\.ml\\'" flymake-ocaml-init) flymake-allowed-file-name-masks)
-(defun flymake-ocaml-init ()
-  (list (expand-file-name "~/.emacs.d/ocaml-flymake.sh")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  End of OPAM configuration   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; --- flymake-tuareg
-;;(require 'flymake-tuareg)
-;;(add-hook 'tuareg-mode-hook 'flymake-tuareg-load)
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;;; --- tuareg
 (use-package tuareg
@@ -1136,20 +1087,6 @@
  '(vhl/default-face ((nil (:foreground "#FF3333" :background "#FFCDCD")))))
 (put 'upcase-region 'disabled nil)
 
-;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-
-;;; --- satysfi mode
-;;(require 'satysfi)
-;;(add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
-;;(add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
-;;(add-hook 'satysfi-mode '(lambda () (setq tab-widh 2 indent-tab-mode nil)))
-;;(setq satysfi-command "satysfi")
-  ;; set the command for typesetting (default: "satysfi -b")
-;;(setq satysfi-pdf-viewer-command "sumatrapdf")
-  ;; set the command for opening PDF files (default: "open")
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1157,4 +1094,5 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(json-mode orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl)))
+   '(json-mode orderless marginalia embark-consult embark consult add-node-modules-path yaml-mode which-key web-mode vue-mode volatile-highlights use-package tuareg tide symbol-overlay swap-regions swap-buffers smex scss-mode scala-mode sbt-mode ruby-refactor ruby-electric ruby-block rainbow-delimiters python-mode py-autopep8 proof-general plantuml-mode php-mode php-completion paredit ocp-indent ocamlformat markdown-preview-mode markdown-preview-eww lsp-ui jedi ipython ido-vertical-mode ido-select-window ido-migemo ido-completing-read+ highlight-indent-guides go-eldoc go-dlv go-complete flymake-python-pyflakes exec-path-from-shell elpy dockerfile-mode diminish csv-mode company-quickhelp-terminal coffee-fof cake2 cake auto-indent-mode anzu ac-nrepl))
+ '(warning-suppress-types '((comp))))
