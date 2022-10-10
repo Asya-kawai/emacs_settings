@@ -472,8 +472,10 @@
    :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-file consult--source-project-file consult--source-bookmark
-   :preview-key (kbd "M-."))
+   consult--source-project-recent-file
+   ;; my/command-wrapping-consult       ;; disable auto previews inside my command
+   ;; :preview-key '(:debounce 0.2 any) ;; Option 1: Delay preview
+   :preview-key (kbd "M-."))            ;; Option 2: Manual preview
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
