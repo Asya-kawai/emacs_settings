@@ -158,7 +158,7 @@
 (setq auto-mode-alist (cons (cons "\\.html?$" 'yahtml-mode) auto-mode-alist))
 (setq yahtml-lint-program "htmllint")
 (setq yahtml-kanji-code 4)  
-(add-hook 'yahtml-mode-hook '(lambda () (setq fill-column 80)))
+(add-hook 'yahtml-mode-hook (lambda () (setq fill-column 80)))
 
 ;;; Emacs-mozc
 ;;(require 'mozc)
@@ -851,9 +851,8 @@
 (require 'scala-bootstrap)
 
 (add-hook 'scala-mode-hook
-  '(lambda ()
-     (scala-bootstrap:with-metals-installed
-      (scala-bootstrap:with-bloop-server-started))))
+          (lambda ()
+            (scala-bootstrap:with-metals-installed (scala-bootstrap:with-bloop-server-started))))
 
 ;;; --- markdown mode
 (use-package markdown-mode
@@ -891,9 +890,9 @@
   :modes (text-mode markdown-mode gfm-mode))
  
 (add-hook 'markdown-mode-hook
-          '(lambda ()
-             (setq flycheck-checker 'textlint)
-             (flycheck-mode 1)))
+          (lambda ()
+            (setq flycheck-checker 'textlint)
+            (flycheck-mode 1)))
 
 ;;; --- org-mode
 (require 'org)
