@@ -23,6 +23,8 @@
 (require '1row-scroll)
 ;;; call reloader
 (require 'reloader)
+;;; delete horizotal-whitespaces
+(require 'delete-horizontal-whitespaces)
 
 ;;; googl search
 ;; You can use default pacakge webjump.el instead of google-search.
